@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>stop watch</title>
+        <meta charset="utf-8">
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+
+            body {
+                margin: auto;
+                padding: 0;
+                background-color: #2b2e4a;
+                color: #e84545;
+                font-family: 'Black Han Sans', sans-serif;
+                user-select: none;
+                overflow: hidden;
+            }
+
+            .main {
+                text-align: center;
+            }
+
+            .main h1 {
+                color: white;
+                font-size: 40px;
+                font-weight: bold;
+                margin-top: 72px;
+            }
+
+            #time {
+                font-size: 100px;
+            }
+
+            .stopWatch {
+                width: 50%;
+                float: left;
+            }
+
+            .buttons {
+                text-align: center;
+                height: 300px;
+            }
+
+            .buttons button {
+                background-color: #2b2e4a;
+                color: #e84545;
+                border: none;
+                width: 300px;
+                height: 300px;
+                border-radius: 150px;
+                font-size: 40px;
+                font-family: 'Black Han Sans', sans-serif;
+                transition: 0.3s;
+                outline: none;
+            }
+
+            .buttons button:hover {
+                background-color: #e84545;
+                color: #2b2e4a;
+                font-size: 50px;
+                cursor: pointer;
+            }
+
+            .record {
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 0;
+                background-color: #e84545;
+                color: #2b2e4a;
+                width: 50%;
+                height: 100%;
+                overflow: auto !important;
+                font-size: 36px;
+            }
+
+            .lapTime {
+                float: left;
+                margin-left: 100px;
+                text-align: center;
+                list-style: none;
+                width: 250px;
+            }
+
+            h3 {
+                color: #2b2e4a;
+                font-size: 42px;
+                height: 80px;
+                padding-top: 30px;
+            }
+
+            .average {
+                float: right;
+                margin-right: 100px;
+                text-align: center;
+                list-style: none;
+                width: 250px;
+            }
+        </style>
+        
+        <script>
+            let time = 0;
+            let isRunningTime = 0;
+            let hours = 0;
+            let minutes = 0;
+            let seconds = 0;
+            let tenthSec = 0;
+            let increase;
+
+            function increasingTime() {
+                tenthSec++;
+                if ( tenthSec >= 100 ) {
+                    seconds++;
+                    tenthSec = 0;
+                    if ( seconds >= 60 ) {
+                        seconds = 0;
+                        minutes++;
+                        if ( minutes >= 60 ) {
+                            minutes = 0;
+                            hours++;
+                        }
+                    }
+                }
+
+                document.querySelector("#time").innerHTML = 
+                hours + " : " 
+                + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + " : " 
+                + (seconds > 9 ? seconds : "0" + seconds) + " : "
+                + (tenthSec > 9 ? tenthSec : "0" + tenthSec);
+            }
+
+
+            function onStartClick() {
+                if ( isRunningTime === 0 ) {
+                    increase = setInterval(increasingTime, 10);
+                    isRunningTime = 1;
+
+                    document.querySelector("#start").innerHTML = "STOP!";
+                } else {
+                    clearInterval(increase);
+                    document.querySelector("#start").innerHTML = "CONTINUE!";
+                    timeAverage();
+                    isRunningTime = 0;
+                }
+            }
+
+            function onRecordClick() {
+                if (isRunningTime === 0) {
+                    onResetClick();
+                } else {
+                    const li = document.createElement("li");
+                    const liTag = document.createTextNode(
+                    hours + " : " 
+                    + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + " : " 
+                    + (seconds > 9 ? seconds : "0" + seconds) + " : "
+                    + (tenthSec > 9 ? tenthSec : "0" + tenthSec)
+                    );
+                    console.log(liTag);
+                    li.appendChild(liTag);
+                    document.querySelector(".lapTime").appendChild(li);
+                }
+            }
+
+            function onResetClick() {
+                document.querySelector("#time").innerHTML = "0 : 00 : 00 : 00";
+                document.querySelector("#start").innerHTML = "START!";
+                hours = 0;
+                minutes = 0;
+                seconds = 0;
+                tenthSec = 0;
+
+                document.querySelector(".lapTime").innerHTML = '';
+            }
+
+            function timeAverage() {
+                const li = document.createElement("li");
+                const node = document.querySelector(".lapTime li");
+                const minTime = document.createTextNode(node[0]);
+                document.querySelector(".average").appendChild(minTime);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="main">
+            <div class="stopWatch">
+                <h1>☀SUN STOPWATCH</h1>
+                <p id="time">
+                    <time>0 : 00 : 00 : 00</time>
+                </p>
+                <div class="buttons">
+                    <button onclick="onRecordClick()" class="recordBtn">
+                        <span id="record">LAP</span>
+                    </button>
+                    <button onclick="onStartClick()" class="startBtn">
+                        <span id="start">START!</span>
+                    </button>
+                </div>
+            </div>
+            <div class="record">
+                <h3>[ RECORDED TIME ]</h3>
+                <ul class="lapTime"></ul>
+                <ul class="average"></ul>
+            </div>
+        </div>
+    </body>
+</html>
