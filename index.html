@@ -136,16 +136,16 @@
                     increase = setInterval(increasingTime, 10);
                     isRunningTime = 1;
 
+                    console.log(isRunningTime);
                     document.querySelector("#start").innerHTML = "STOP!";
                 } else {
                     clearInterval(increase);
                     document.querySelector("#start").innerHTML = "CONTINUE!";
-                    timeAverage();
                     isRunningTime = 0;
                 }
             }
 
-            function onRecordClick() {
+            function onRecordClick() { 
                 if (isRunningTime === 0) {
                     onResetClick();
                 } else {
@@ -156,7 +156,6 @@
                     + (seconds > 9 ? seconds : "0" + seconds) + " : "
                     + (tenthSec > 9 ? tenthSec : "0" + tenthSec)
                     );
-                    console.log(liTag);
                     li.appendChild(liTag);
                     document.querySelector(".lapTime").appendChild(li);
                 }
@@ -175,11 +174,11 @@
 
             function timeAverage() {
                 const li = document.createElement("li");
-                const node = document.querySelector(".lapTime li");
-                const minTime = document.createTextNode(node[0]);
-                document.querySelector(".average").appendChild(minTime);
+                const liFirstChild = document.querySelectorAll('.lapTime:first-child');
+                console.log(document.querySelector(liFirstChild));
+                document.querySelector(".average").appendChild(document.createTextNode(liFirstChild));
             }
-        </script>
+        </script> 
     </head>
     <body>
         <div class="main">
