@@ -71,8 +71,12 @@
                 color: #2b2e4a;
                 width: 50%;
                 height: 100%;
-                overflow: auto !important;
                 font-size: 36px;
+            }
+
+            .record div {
+                height: 85%;
+                overflow: auto !important;
             }
 
             .lapTime {
@@ -136,12 +140,12 @@
                     increase = setInterval(increasingTime, 10);
                     isRunningTime = 1;
 
-                    console.log(isRunningTime);
                     document.querySelector("#start").innerHTML = "STOP!";
                 } else {
                     clearInterval(increase);
                     document.querySelector("#start").innerHTML = "CONTINUE!";
                     isRunningTime = 0;
+                    timeAverage();
                 }
             }
 
@@ -173,10 +177,11 @@
             }
 
             function timeAverage() {
-                const li = document.createElement("li");
-                const liFirstChild = document.querySelectorAll('.lapTime:first-child');
+                const averageLi = document.createElement("li");
+                const liFirstChild = document.createTextNode(document.querySelector(".lapTime").children[0]);
+                averageLi.appendChild(liFirstChild);
+                document.querySelector(".average").appendChild(averageLi);
                 console.log(document.querySelector(liFirstChild));
-                document.querySelector(".average").appendChild(document.createTextNode(liFirstChild));
             }
         </script> 
     </head>
@@ -198,8 +203,10 @@
             </div>
             <div class="record">
                 <h3>[ RECORDED TIME ]</h3>
-                <ul class="lapTime"></ul>
-                <ul class="average"></ul>
+                <div>
+                    <ul class="lapTime"></ul>
+                    <ul class="average"></ul>
+                </div>
             </div>
         </div>
     </body>
