@@ -74,17 +74,18 @@
                 font-size: 36px;
             }
 
-            .record div {
-                height: 85%;
-                overflow: auto !important;
-            }
-
             .lapTime {
+                height: 72%;
+                overflow: auto !important;
                 float: left;
                 margin-left: 100px;
                 text-align: center;
                 list-style: none;
                 width: 250px;
+            }
+
+            .lapTime li {
+                margin-bottom: 15px;
             }
 
             h3 {
@@ -111,6 +112,7 @@
             let seconds = 0;
             let tenthSec = 0;
             let increase;
+            let minTime = '';
 
             function increasingTime() {
                 tenthSec++;
@@ -177,12 +179,22 @@
             }
 
             function timeAverage() {
-                const averageLi = document.createElement("li");
-                const liFirstChild = document.createTextNode(document.querySelector(".lapTime").children[0]);
-                averageLi.appendChild(liFirstChild);
-                document.querySelector(".average").appendChild(averageLi);
-                console.log(document.querySelector(liFirstChild));
+                minTime = document.querySelectorAll(".lapTime li")[0];
+                document.querySelector("#min").innerHTML = minTime;
             }
+
+            (function() {
+                document.addEventListener('keydown', function(e) {
+                    const keyCode = e.keyCode;
+                    
+                    if(keyCode === 32) {
+                        onStartClick();
+                    } else if (keyCode === 82) {
+                        onRecordClick();
+                    }
+                })
+            })();
+
         </script> 
     </head>
     <body>
@@ -200,13 +212,17 @@
                         <span id="start">START!</span>
                     </button>
                 </div>
+                <p style="font-size: 30px;">
+                    Lap Key : R(r) key press<br>
+                    Start / Stop Key : space key press
+                </p>
             </div>
             <div class="record">
                 <h3>[ RECORDED TIME ]</h3>
-                <div>
                     <ul class="lapTime"></ul>
-                    <ul class="average"></ul>
-                </div>
+                    <ul class="average">
+                        <li>minTime: <span id="min"></span></li>
+                    </ul>
             </div>
         </div>
     </body>
