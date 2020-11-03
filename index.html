@@ -95,6 +95,11 @@
                 padding-top: 30px;
             }
 
+            hr {
+                border: 2px solid #2b2e4a;
+                background-color: #2b2e4a;
+            }
+
             .average {
                 float: right;
                 margin-right: 100px;
@@ -112,7 +117,8 @@
             let seconds = 0;
             let tenthSec = 0;
             let increase;
-            let minTime = '';
+            let timeArray = [];
+
 
             function increasingTime() {
                 tenthSec++;
@@ -155,32 +161,41 @@
                 if (isRunningTime === 0) {
                     onResetClick();
                 } else {
-                    const li = document.createElement("li");
-                    const liTag = document.createTextNode(
+                    const recordedTime = 
                     hours + " : " 
                     + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + " : " 
                     + (seconds > 9 ? seconds : "0" + seconds) + " : "
-                    + (tenthSec > 9 ? tenthSec : "0" + tenthSec)
-                    );
+                    + (tenthSec > 9 ? tenthSec : "0" + tenthSec);
+                    const li = document.createElement("li");
+                    const liTag = document.createTextNode(recordedTime);
                     li.appendChild(liTag);
                     document.querySelector(".lapTime").appendChild(li);
+                    timeArray.push(recordedTime);
+                    console.log(timeArray);
                 }
             }
 
             function onResetClick() {
                 document.querySelector("#time").innerHTML = "0 : 00 : 00 : 00";
                 document.querySelector("#start").innerHTML = "START!";
+                document.querySelector("#min").innerHTML = "";
+                document.querySelector("#max").innerHTML = "";
+                document.querySelector("#avg").innerHTML = "";
                 hours = 0;
                 minutes = 0;
                 seconds = 0;
                 tenthSec = 0;
+                timeArray = [];
+
+                console.log(timeArray);
 
                 document.querySelector(".lapTime").innerHTML = '';
             }
 
             function timeAverage() {
-                minTime = document.querySelectorAll(".lapTime li")[0];
-                document.querySelector("#min").innerHTML = minTime;
+                document.querySelector("#min").innerHTML = timeArray[0];
+                document.querySelector("#max").innerHTML = timeArray[timeArray.length-1];
+
             }
 
             (function() {
@@ -221,7 +236,11 @@
                 <h3>[ RECORDED TIME ]</h3>
                     <ul class="lapTime"></ul>
                     <ul class="average">
-                        <li>minTime: <span id="min"></span></li>
+                        <li>최소 시간<br><span id="min"></span></li>
+                        <hr>
+                        <li>최대 시간<br><span id="max"></span></li>
+                        <hr>
+                        <li>시간 평균<br><span id="avg"></span></li>
                     </ul>
             </div>
         </div>
