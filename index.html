@@ -145,7 +145,7 @@
 
             function onStartClick() {
                 if ( isRunningTime === 0 ) {
-                    increase = setInterval(increasingTime, 10);
+                    increase = setInterval(increasingTime, 0.01);
                     isRunningTime = 1;
 
                     document.querySelector("#start").innerHTML = "STOP!";
@@ -204,20 +204,32 @@
                 let totalMinute = 0;
                 let totalSecond = 0;
                 let totalTenth = 0;
+                let totalTime = 0;
 
                 for(let i = 0; i <= timeArray.length; i++) {
                     const avgSplice = timeArray[i].split(" : ");
 
-                    totalHour += parseInt(avgSplice[0]);
-                    totalMinute += parseInt(avgSplice[1]);
-                    totalSecond += parseInt(avgSplice[2]);
+                    totalHour += parseInt(avgSplice[0]*3600);
+                    totalMinute += parseInt(avgSplice[1]*6000);
+                    totalSecond += parseInt(avgSplice[2]*100);
                     totalTenth += parseInt(avgSplice[3]);
+
+                    totalTime += (totalHour + totalMinute + totalSecond + totalTenth);
+                    totalTime /= timeArray.length;
                     
+                    totalHour = (totalTime/3600);
+                    totalMinute = (totalTime/6000);
+                    totalSecond = (totalTime/100) <= 60 ? (totalTime/100) 
+                    : (totalTime/100) - (60*totalMinute);
+                    totalTenth = (totalTime - ((totalTime/100)*100));
+                    console.log(totalSecond);
+
                     avgTime = 
-                    Math.floor(totalHour/timeArray.length) + ' : '
-                    + formatTime(Math.floor(totalMinute/timeArray.length)) + ' : '
-                    + formatTime(Math.floor(totalSecond/timeArray.length)) + ' : '
-                    + Math.floor(totalTenth/timeArray.length);
+                    Math.floor(totalHour) + ' : '
+                    + formatTime(Math.floor(totalMinute)) + ' : '
+                    + formatTime(Math.floor(totalSecond)) + ' : '
+                    + formatTime(Math.floor(totalTenth));
+
                     document.querySelector("#avg").innerHTML = avgTime;
                 }
             }
