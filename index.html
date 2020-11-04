@@ -63,14 +63,11 @@
             }
 
             .record {
-                position: absolute;
-                top: 0;
-                right: 0;
-                margin: 0;
+                float: right;
                 background-color: #e84545;
                 color: #2b2e4a;
                 width: 50%;
-                height: 100%;
+                height: 100vh;
                 font-size: 36px;
             }
 
@@ -110,6 +107,50 @@
 
             #min, #max, #avg {
                 color: white;
+            }
+            
+            @media screen and (max-width: 992px) {
+                body {
+                    overflow: auto;
+                }
+                .stopWatch {
+                    display: inline;
+                    width: 100%;
+                    height: 100vh;
+                }
+
+                .buttons button {
+                    width: 150px;
+                    height: 150px;
+                    font-size: 20px;
+                }
+                .buttons button:hover {
+                    font-size: 24px;
+                }
+
+                #time {
+                font-size: 50px;
+                }
+                
+                .record {
+                    display: inline;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .lapTime {
+                    width: 100%;
+                    height: 70%;
+                    overflow: auto !important;
+                    margin: 0 0 50px 0;
+                    padding: 0;
+                }
+
+                .average {
+                    width: 100%;
+                    height: 60vh;
+                    margin: 0;
+                }                
             }
         </style>
         
@@ -294,7 +335,7 @@
                         <span id="start">START!</span>
                     </button>
                 </div>
-                <p style="font-size: 30px; color: #fff;">
+                <p style="font-size: 25px; color: #fff;">
                     Lap Key : R(r) key press<br>
                     Start / Stop Key : space key press
                 </p>
