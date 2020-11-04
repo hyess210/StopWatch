@@ -107,6 +107,10 @@
                 list-style: none;
                 width: 250px;
             }
+
+            #min, #max, #avg {
+                color: white;
+            }
         </style>
         
         <script>
@@ -154,7 +158,7 @@
                     document.querySelector("#start").innerHTML = "CONTINUE!";
                     isRunningTime = 0;
 
-                    timeArray.length === 0 ?
+                    timeArray.length === 0 || timeArray.length === 1 ?
                     document.querySelector("#minTime").innerHTML = '' :
                     timeAverage();
                 }
@@ -174,7 +178,6 @@
                     li.appendChild(liTag);
                     document.querySelector(".lapTime").appendChild(li);
                     timeArray.push(recordedTime);
-                    console.log(timeArray);
                 }
             }
 
@@ -200,35 +203,53 @@
                 document.querySelector("#max").innerHTML = timeArray[timeArray.length-1];
                 
                 let avgTime = 0;
-                let totalHour = 0;
-                let totalMinute = 0;
-                let totalSecond = 0;
-                let totalTenth = 0;
+                let avgHour = 0;
+                let avgMinute = 0;
+                let avgSecond = 0;
+                let avgTenth = 0;
                 let totalTime = 0;
 
                 for(let i = 0; i <= timeArray.length; i++) {
-                    const avgSplice = timeArray[i].split(" : ");
+                    const avgSplit = timeArray[i].split(" : ");
 
-                    totalHour += parseInt(avgSplice[0]*3600);
-                    totalMinute += parseInt(avgSplice[1]*6000);
-                    totalSecond += parseInt(avgSplice[2]*100);
-                    totalTenth += parseInt(avgSplice[3]);
+                    // totalHour += Number(avgSplit[0]);
+                    // totalMinute += Number(avgSplit[1]);
+                    // totalSecond += Number(avgSplit[2]*100);
+                    // totalTenth += Number(avgSplit[3]);
 
-                    totalTime += (totalHour + totalMinute + totalSecond + totalTenth);
-                    totalTime /= timeArray.length;
+                    // totalTime += ((totalHour*3600) + (totalMinute*6000) + totalSecond + totalTenth);
+                    // totalTime /= timeArray.length-1;
                     
-                    totalHour = (totalTime/3600);
-                    totalMinute = (totalTime/6000);
-                    totalSecond = (totalTime/100) <= 60 ? (totalTime/100) 
-                    : (totalTime/100) - (60*totalMinute);
-                    totalTenth = (totalTime - ((totalTime/100)*100));
-                    console.log(totalSecond);
+
+                    // totalSecond = parseInt(totalTime/100) - parseInt(60*totalMinute);
+                    // totalTenth = (totalTime - ((totalTime/100)*100));
+                    // console.log(avgSplit);
+
+                    // avgTime = 
+                    // Math.floor(totalHour) + ' : '
+                    // + formatTime(Math.floor(totalMinute)) + ' : '
+                    // + formatTime(Math.floor(totalSecond)) + ' : '
+                    // + formatTime(Math.floor(totalTenth));
+                    
+                    avgHour += Number(avgSplit[0]);
+                    avgMinute += Number(avgSplit[1]);
+                    avgSecond += Number(avgSplit[2]);
+                    avgTenth += Number(avgSplit[3]);
 
                     avgTime = 
-                    Math.floor(totalHour) + ' : '
-                    + formatTime(Math.floor(totalMinute)) + ' : '
-                    + formatTime(Math.floor(totalSecond)) + ' : '
-                    + formatTime(Math.floor(totalTenth));
+                    (Math.floor(avgMinute/timeArray.length) > 60 ?
+                    Math.floor((avgHour/timeArray.length)+1) 
+                    : Math.floor(avgHour/timeArray.length))  
+                    +" : "+ 
+                    (Math.floor(avgSecond/timeArray.length) > 60 ?
+                    formatTime(Math.floor((avgMinute/timeArray.length)+1))
+                    : formatTime(Math.floor(avgMinute/timeArray.length)))
+                    +" : "+ 
+                    (Math.floor(avgTenth/timeArray.length) > 100 ?
+                    formatTime(Math.floor((avgSecond/timeArray.length)+1))
+                    : formatTime(Math.floor(avgSecond/timeArray.length)))
+                    +" : "+ 
+                    formatTime(Math.floor(avgTenth/timeArray.length));
 
                     document.querySelector("#avg").innerHTML = avgTime;
                 }
@@ -239,7 +260,7 @@
                     return "0" + number;
                 } else {
                     return number;
-                }
+                } 
             }
 
             (function() {
@@ -247,8 +268,10 @@
                     const keyCode = e.keyCode;
                     
                     if(keyCode === 32) {
+                        e.target.blur();
                         onStartClick();
                     } else if (keyCode === 82) {
+                        e.target.blur();
                         onRecordClick();
                     }
                 })
@@ -271,7 +294,7 @@
                         <span id="start">START!</span>
                     </button>
                 </div>
-                <p style="font-size: 30px;">
+                <p style="font-size: 30px; color: #fff;">
                     Lap Key : R(r) key press<br>
                     Start / Stop Key : space key press
                 </p>
