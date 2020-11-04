@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>stop watch</title>
+        <meta charset="utf-8">
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+
+            body {
+                margin: auto;
+                padding: 0;
+                background-color: #2b2e4a;
+                color: #e84545;
+                font-family: 'Black Han Sans', sans-serif;
+                user-select: none;
+                overflow: hidden;
+            }
+
+            .main {
+                text-align: center;
+            }
+
+            .main h1 {
+                color: white;
+                font-size: 40px;
+                font-weight: bold;
+                margin-top: 72px;
+            }
+
+            #time {
+                font-size: 100px;
+            }
+
+            .stopWatch {
+                width: 50%;
+                float: left;
+            }
+
+            .buttons {
+                text-align: center;
+                height: 300px;
+            }
+
+            .buttons button {
+                background-color: #2b2e4a;
+                color: #e84545;
+                border: none;
+                width: 300px;
+                height: 300px;
+                border-radius: 150px;
+                font-size: 40px;
+                font-family: 'Black Han Sans', sans-serif;
+                transition: 0.3s;
+                outline: none;
+            }
+
+            .buttons button:hover {
+                background-color: #e84545;
+                color: #2b2e4a;
+                font-size: 50px;
+                cursor: pointer;
+            }
+
+            .record {
+                float: right;
+                background-color: #e84545;
+                color: #2b2e4a;
+                width: 50%;
+                height: 100vh;
+                font-size: 36px;
+            }
+
+            .lapTime {
+                height: 72%;
+                overflow: auto !important;
+                float: left;
+                margin-left: 100px;
+                text-align: center;
+                list-style: none;
+                width: 250px;
+            }
+
+            .lapTime li {
+                margin-bottom: 15px;
+            }
+
+            h3 {
+                color: #2b2e4a;
+                font-size: 42px;
+                height: 80px;
+                padding-top: 30px;
+            }
+
+            hr {
+                border: 2px solid #2b2e4a;
+                background-color: #2b2e4a;
+            }
+
+            .average {
+                float: right;
+                margin-right: 100px;
+                text-align: center;
+                list-style: none;
+                width: 250px;
+            }
+
+            #min, #max, #avg {
+                color: white;
+            }
+            
+            @media screen and (max-width: 992px) {
+                body {
+                    overflow: auto;
+                }
+                .stopWatch {
+                    display: inline;
+                    width: 100%;
+                    height: 100vh;
+                }
+
+                .buttons button {
+                    width: 150px;
+                    height: 150px;
+                    font-size: 20px;
+                }
+                .buttons button:hover {
+                    font-size: 24px;
+                }
+
+                #time {
+                font-size: 50px;
+                }
+                
+                .record {
+                    display: inline;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .lapTime {
+                    width: 100%;
+                    height: 70%;
+                    overflow: auto !important;
+                    margin: 0 0 50px 0;
+                    padding: 0;
+                }
+
+                .average {
+                    width: 100%;
+                    height: 60vh;
+                    margin: 0;
+                }                
+            }
+        </style>
+        
+        <script>
+            let time = 0;
+            let isRunningTime = 0;
+            let hours = 0;
+            let minutes = 0;
+            let seconds = 0;
+            let tenthSec = 0;
+            let increase;
+            let timeArray = [];
+
+
+            function increasingTime() {
+                tenthSec++;
+                if ( tenthSec >= 100 ) {
+                    seconds++;
+                    tenthSec = 0;
+                    if ( seconds >= 60 ) {
+                        seconds = 0;
+                        minutes++;
+                        if ( minutes >= 60 ) {
+                            minutes = 0;
+                            hours++;
+                        }
+                    }
+                }
+
+                document.querySelector("#time").innerHTML = 
+                hours + " : " 
+                + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + " : " 
+                + (seconds > 9 ? seconds : "0" + seconds) + " : "
+                + (tenthSec > 9 ? tenthSec : "0" + tenthSec);
+            }
+
+
+            function onStartClick() {
+                if ( isRunningTime === 0 ) {
+                    increase = setInterval(increasingTime, 0.01);
+                    isRunningTime = 1;
+
+                    document.querySelector("#start").innerHTML = "STOP!";
+                } else {
+                    clearInterval(increase);
+                    document.querySelector("#start").innerHTML = "CONTINUE!";
+                    isRunningTime = 0;
+
+                    timeArray.length === 0 || timeArray.length === 1 ?
+                    document.querySelector("#minTime").innerHTML = '' :
+                    timeAverage();
+                }
+            }
+
+            function onRecordClick() { 
+                if (isRunningTime === 0) {
+                    onResetClick();
+                } else {
+                    const recordedTime = 
+                    hours + " : " 
+                    + formatTime(minutes) + " : " 
+                    + formatTime(seconds) + " : "
+                    + formatTime(tenthSec);
+                    const li = document.createElement("li");
+                    const liTag = document.createTextNode(recordedTime);
+                    li.appendChild(liTag);
+                    document.querySelector(".lapTime").appendChild(li);
+                    timeArray.push(recordedTime);
+                }
+            }
+
+            function onResetClick() {
+                document.querySelector("#time").innerHTML = "0 : 00 : 00 : 00";
+                document.querySelector("#start").innerHTML = "START!";
+                document.querySelector("#min").innerHTML = "";
+                document.querySelector("#max").innerHTML = "";
+                document.querySelector("#avg").innerHTML = "";
+                hours = 0;
+                minutes = 0;
+                seconds = 0;
+                tenthSec = 0;
+                timeArray = [];
+
+                console.log(timeArray);
+
+                document.querySelector(".lapTime").innerHTML = '';
+            }
+
+            function timeAverage() {
+                document.querySelector("#min").innerHTML = timeArray[0];
+                document.querySelector("#max").innerHTML = timeArray[timeArray.length-1];
+                
+                let avgTime = 0;
+                let avgHour = 0;
+                let avgMinute = 0;
+                let avgSecond = 0;
+                let avgTenth = 0;
+                let totalTime = 0;
+
+                for(let i = 0; i <= timeArray.length; i++) {
+                    const avgSplit = timeArray[i].split(" : ");
+
+                    // totalHour += Number(avgSplit[0]);
+                    // totalMinute += Number(avgSplit[1]);
+                    // totalSecond += Number(avgSplit[2]*100);
+                    // totalTenth += Number(avgSplit[3]);
+
+                    // totalTime += ((totalHour*3600) + (totalMinute*6000) + totalSecond + totalTenth);
+                    // totalTime /= timeArray.length-1;
+                    
+
+                    // totalSecond = parseInt(totalTime/100) - parseInt(60*totalMinute);
+                    // totalTenth = (totalTime - ((totalTime/100)*100));
+                    // console.log(avgSplit);
+
+                    // avgTime = 
+                    // Math.floor(totalHour) + ' : '
+                    // + formatTime(Math.floor(totalMinute)) + ' : '
+                    // + formatTime(Math.floor(totalSecond)) + ' : '
+                    // + formatTime(Math.floor(totalTenth));
+                    
+                    avgHour += Number(avgSplit[0]);
+                    avgMinute += Number(avgSplit[1]);
+                    avgSecond += Number(avgSplit[2]);
+                    avgTenth += Number(avgSplit[3]);
+
+                    avgTime = 
+                    (Math.floor(avgMinute/timeArray.length) > 60 ?
+                    Math.floor((avgHour/timeArray.length)+1) 
+                    : Math.floor(avgHour/timeArray.length))  
+                    +" : "+ 
+                    (Math.floor(avgSecond/timeArray.length) > 60 ?
+                    formatTime(Math.floor((avgMinute/timeArray.length)+1))
+                    : formatTime(Math.floor(avgMinute/timeArray.length)))
+                    +" : "+ 
+                    (Math.floor(avgTenth/timeArray.length) > 100 ?
+                    formatTime(Math.floor((avgSecond/timeArray.length)+1))
+                    : formatTime(Math.floor(avgSecond/timeArray.length)))
+                    +" : "+ 
+                    formatTime(Math.floor(avgTenth/timeArray.length));
+
+                    document.querySelector("#avg").innerHTML = avgTime;
+                }
+            }
+
+            function formatTime(number) {
+                if ( number <= 9 ) {
+                    return "0" + number;
+                } else {
+                    return number;
+                } 
+            }
+
+            (function() {
+                document.addEventListener('keydown', function(e) {
+                    const keyCode = e.keyCode;
+                    
+                    if(keyCode === 32) {
+                        e.target.blur();
+                        onStartClick();
+                    } else if (keyCode === 82) {
+                        e.target.blur();
+                        onRecordClick();
+                    }
+                })
+            })();
+
+        </script> 
+    </head>
+    <body>
+        <div class="main">
+            <div class="stopWatch">
+                <h1>☀SUN STOPWATCH</h1>
+                <p id="time">
+                    <time>0 : 00 : 00 : 00</time>
+                </p>
+                <div class="buttons">
+                    <button onclick="onRecordClick()" class="recordBtn">
+                        <span id="record">LAP</span>
+                    </button>
+                    <button onclick="onStartClick()" class="startBtn">
+                        <span id="start">START!</span>
+                    </button>
+                </div>
+                <p style="font-size: 25px; color: #fff;">
+                    Lap Key : R(r) key press<br>
+                    Start / Stop Key : space key press
+                </p>
+            </div>
+            <div class="record">
+                <h3>[ RECORDED TIME ]</h3>
+                    <ul class="lapTime"></ul>
+                    <ul class="average">
+                        <li>최소 시간<br><span id="min"></span></li>
+                        <hr>
+                        <li>최대 시간<br><span id="max"></span></li>
+                        <hr>
+                        <li>시간 평균<br><span id="avg"></span></li>
+                    </ul>
+            </div>
+        </div>
+    </body>
+</html>
