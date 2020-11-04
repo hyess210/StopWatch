@@ -153,6 +153,9 @@
                     clearInterval(increase);
                     document.querySelector("#start").innerHTML = "CONTINUE!";
                     isRunningTime = 0;
+
+                    timeArray.length === 0 ?
+                    document.querySelector("#minTime").innerHTML = '' :
                     timeAverage();
                 }
             }
@@ -163,9 +166,9 @@
                 } else {
                     const recordedTime = 
                     hours + " : " 
-                    + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + " : " 
-                    + (seconds > 9 ? seconds : "0" + seconds) + " : "
-                    + (tenthSec > 9 ? tenthSec : "0" + tenthSec);
+                    + formatTime(minutes) + " : " 
+                    + formatTime(seconds) + " : "
+                    + formatTime(tenthSec);
                     const li = document.createElement("li");
                     const liTag = document.createTextNode(recordedTime);
                     li.appendChild(liTag);
@@ -195,7 +198,36 @@
             function timeAverage() {
                 document.querySelector("#min").innerHTML = timeArray[0];
                 document.querySelector("#max").innerHTML = timeArray[timeArray.length-1];
+                
+                let avgTime = 0;
+                let totalHour = 0;
+                let totalMinute = 0;
+                let totalSecond = 0;
+                let totalTenth = 0;
 
+                for(let i = 0; i <= timeArray.length; i++) {
+                    const avgSplice = timeArray[i].split(" : ");
+
+                    totalHour += parseInt(avgSplice[0]);
+                    totalMinute += parseInt(avgSplice[1]);
+                    totalSecond += parseInt(avgSplice[2]);
+                    totalTenth += parseInt(avgSplice[3]);
+                    
+                    avgTime = 
+                    Math.floor(totalHour/timeArray.length) + ' : '
+                    + formatTime(Math.floor(totalMinute/timeArray.length)) + ' : '
+                    + formatTime(Math.floor(totalSecond/timeArray.length)) + ' : '
+                    + Math.floor(totalTenth/timeArray.length);
+                    document.querySelector("#avg").innerHTML = avgTime;
+                }
+            }
+
+            function formatTime(number) {
+                if ( number <= 9 ) {
+                    return "0" + number;
+                } else {
+                    return number;
+                }
             }
 
             (function() {
